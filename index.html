@@ -364,26 +364,29 @@ Design • Dimas V0.1.0
           <h2 style=" font-size: 18px;  margin-left: 8px; padding: 8px 0px; "> Buat gambar tulis prompt / Description</h2>
           <p style="font-size: 13px; margin-left: 8px;">
           Buat gambar free terbatas jika terjadi error stop lanjut lagi setelah pembaruan beberapa saat
-          </p><div style="padding: 8px;">
+          </p><div style="padding: 10px;">
           <textarea id="uniquePromptInput" class="unique-prompt-input"
-          style="width: 100%; height: 80px; padding: 0px;
+          style="width: 100%; 
+          height: 20vh; padding: 0px;
           border: 1px solid #4fb4ffe0; border-radius: 5px; font-size: 14px;
           "
           placeholder="Tulis deskripsi kreatif Anda di sini..."></textarea>
           </div><div class="unique-image-container">  <h3 style=" font-size: 15px;       color: #028e33f9; font-size: 16px; margin-top: -12px;">
           Image displayed <i style="margin-left: 0px; font-size: 14px; color: #028e33f9; " class="fab fa-earlybirds"></i>
           </h3><img id="uniqueGeneratedImage" class="unique-generated-image" alt="">
-          <div id="loader" class="loader"></div>
-          <div class="scroll-container">
-          <div id="loader" class="loader"></div>
+<div id="loader" class="loader"></div>
+<div class="scroll-container"></div>
           <div id="downloadTextContainer" style="display: none; text-align: center; font-size: 14px; font-weight: bold; color: #333; margin-top: 10px;"></div>
-          <div><select id="uniqueHeightInput" class="unique-height-input" style="font-size: 15px; padding: 5px; border-radius: 8px; font-weight: bold; color: #ec5306;">
-          <option value="400">H150</option>
-          <option value="500">500Px</option>
-          <option value="600">600Px</option>
-          <option value="700">700Px</option>
-          <option value="800">800M</option>
-          </select><button id="uniqueGenerateBtn" class="unique-generate-btn"
+          <div><select id="uniqueHeightInput" class="unique-height-input" 
+        style="font-size: 15px; padding: 5px; border-radius: 8px; font-weight: bold; color: #ec5306;">
+  <option value="200">200Px sampul</option>
+  <option value="300">300Px sampul</option>
+  <option value="400">400Px</option>
+  <option value="500">500Px (Persegi)</option>
+  <option value="600">600Px</option>
+  <option value="700">700Px</option>
+  <option value="800">800Px</option>
+</select><button id="uniqueGenerateBtn" class="unique-generate-btn"
           style="color: #333; border: none; border-radius: 8px; font-size: 14px; padding: 8px; cursor: pointer; margin-top: 0px; font-weight: bold; margin-left: 10px;">Generate Images<i style="margin-left: 5px; font-size: 15px; color: #fc7f2bf9;" class="fab fa-gripfire"></i></button></div><div id="preset-images" style="margin-top: 10px;"><h3 style="color: #028e33f9; font-size: 15px; margin-bottom: 10px;">
           Gambar Preset klik untuk buat ⇆ Scrollbar
           </h3></div><div class="image-slider-container"><div class="image-slider">
@@ -457,8 +460,89 @@ Design • Dimas V0.1.0
     });
   </script>
 
- <script>const promptInput = document.getElementById("uniquePromptInput"); const sliderImages = document.querySelectorAll(".slider-image"); const generatedImage = document.getElementById("uniqueGeneratedImage"); const loader = document.getElementById("loader"); const saveBtn = document.getElementById("uniqueSaveBtn"); const heightInput = document.getElementById("uniqueHeightInput"); const generateBtn = document.getElementById("uniqueGenerateBtn"); function generateImage(description = null) { const prompt = description || promptInput.value.trim(); const height = parseInt(heightInput.value) || 1024; const width = 1024; if (!prompt) { alert("Please enter a description for the image."); return; } loader.style.display = 'block'; setTimeout(() => { loader.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50); const seed = Math.floor(Math.random() * 1000000); const generateImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=1&seed=${seed}&width=${width}&height=${height}&quality=100`; generatedImage.src = generateImageUrl; generatedImage.onload = () => { loader.style.display = 'none'; saveBtn.disabled = false; generatedImage.setAttribute("onclick", "saveImage()"); generatedImage.style.cursor = "pointer"; let downloadText = document.getElementById("downloadText"); if (!downloadText) { downloadText = document.createElement("p"); downloadText.id = "downloadText"; generatedImage.parentNode.insertBefore(downloadText, generatedImage.nextSibling); } downloadText.textContent = " Tekan gambar 2 detik klik Download Gambar"; downloadText.style.textAlign = "center"; downloadText.style.fontSize = "14px"; downloadText.style.fontWeight = "bold"; downloadText.style.color = "#333"; downloadText.style.marginTop = "-5px"; downloadText.style.marginBottom= "10px"; downloadText.style.display = "block"; setTimeout(() => { generatedImage.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 200); }; } function saveImage() { const link = document.createElement('a'); link.href = generatedImage.src; link.download = 'generated_image.png'; link.click(); } sliderImages.forEach(image => { image.addEventListener("click", function () { const prompt = this.getAttribute("data-prompt"); promptInput.value = prompt; generateImage(prompt); window.scrollTo({ top: 0, behavior: 'smooth' }); }); }); generateBtn.addEventListener("click", () => generateImage()); saveBtn.addEventListener("click", saveImage); 
- </script>
+<script>
+const promptInput = document.getElementById("uniquePromptInput");
+const sliderImages = document.querySelectorAll(".slider-image");
+const generatedImage = document.getElementById("uniqueGeneratedImage");
+const loader = document.getElementById("loader");
+const saveBtn = document.getElementById("uniqueSaveBtn");
+const heightInput = document.getElementById("uniqueHeightInput");
+const generateBtn = document.getElementById("uniqueGenerateBtn");
+
+function generateImage(description = null) {
+  const prompt = description || promptInput.value.trim();
+  const selected = parseInt(heightInput.value) || 500;
+
+  const width = 500;       // lebar selalu fix 500
+  const height = selected; // tinggi ikut pilihan
+
+  if (!prompt) {
+    alert("Please enter a description for the image.");
+    return;
+  }
+
+  loader.style.display = 'block';
+  setTimeout(() => {
+    loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+
+  const seed = Math.floor(Math.random() * 1000000);
+  const generateImageUrl =
+    `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=${width}&height=${height}`;
+
+  generatedImage.src = generateImageUrl;
+
+
+  // ... lanjut sama seperti kode Anda
+
+
+
+  generatedImage.onload = () => {
+    loader.style.display = 'none';
+    saveBtn.disabled = false;
+    generatedImage.setAttribute("onclick", "saveImage()");
+    generatedImage.style.cursor = "pointer";
+
+    let downloadText = document.getElementById("downloadText");
+    if (!downloadText) {
+      downloadText = document.createElement("p");
+      downloadText.id = "downloadText";
+      generatedImage.parentNode.insertBefore(downloadText, generatedImage.nextSibling);
+    }
+    downloadText.textContent = " Tekan gambar 2 detik klik Download Gambar";
+    downloadText.style.textAlign = "center";
+    downloadText.style.fontSize = "14px";
+    downloadText.style.fontWeight = "bold";
+    downloadText.style.color = "#333";
+    downloadText.style.marginTop = "-5px";
+    downloadText.style.marginBottom = "10px";
+    downloadText.style.display = "block";
+
+    setTimeout(() => {
+      generatedImage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  };
+}
+
+function saveImage() {
+  const link = document.createElement('a');
+  link.href = generatedImage.src;
+  link.download = 'generated_image.png';
+  link.click();
+}
+
+sliderImages.forEach(image => {
+  image.addEventListener("click", function () {
+    const prompt = this.getAttribute("data-prompt");
+    promptInput.value = prompt;
+    generateImage(prompt);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+generateBtn.addEventListener("click", () => generateImage());
+saveBtn.addEventListener("click", saveImage);
+</script>
 
 </body>
 </html>
